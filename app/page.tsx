@@ -114,7 +114,7 @@ export default function HomePage() {
                   </button>
                   <button
                     onClick={() => router.push('/register')}
-                    className="border-2 border-green-500 text-green-600 hover:bg-green-50 font-semibold py-4 px-8 rounded-lg transition-all duration-200"
+                    className="border-2 border-green-500 text-green-400 hover:bg-green-900/30 hover:text-green-300 font-semibold py-4 px-8 rounded-lg transition-all duration-200"
                   >
                     Sign Up Free
                   </button>
@@ -124,9 +124,9 @@ export default function HomePage() {
           </div>
 
           {/* Features Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {features.map((feature, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg border border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div key={index} className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-6 shadow-lg hover:shadow-xl hover:bg-gray-800/70 transition-all duration-300 transform hover:-translate-y-1">
                 <feature.icon className={`w-12 h-12 ${feature.color} mb-4`} />
                 <h3 className="font-semibold text-white mb-2">{feature.title}</h3>
                 <p className="text-gray-300 text-sm">{feature.description}</p>
@@ -135,19 +135,19 @@ export default function HomePage() {
           </div>
 
           {/* T-shirt Promo Banner */}
-          <div className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-lg p-1 mb-16">
-            <div className="bg-gray-800 rounded-lg p-8 text-center">
-              <div className="text-4xl mb-4">👕⭐</div>
-              <h2 className="text-2xl font-bold text-white mb-2">
+          <div className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-xl p-1 mb-16 shadow-2xl">
+            <div className="bg-gray-800 rounded-xl p-8 text-center">
+              <div className="text-6xl mb-6 animate-bounce">👕⭐</div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
                 Exclusive CEO T-Shirt - $100
               </h2>
-              <p className="text-gray-300 mb-4">
+              <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto">
                 Get unlimited rides for 1 year + hand-signed CEO t-shirt!<br/>
-                <span className="text-sm text-gray-400">(Worth $1,300 - Limited to 500 units)</span>
+                <span className="text-base text-yellow-400 font-semibold">(Worth $1,300 - Limited to 500 units)</span>
               </p>
               <button
                 onClick={() => router.push('/tshirt-promo')}
-                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 text-lg"
               >
                 Get Exclusive T-Shirt 🔥
               </button>
@@ -156,45 +156,45 @@ export default function HomePage() {
 
           {/* Testimonials */}
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-8">What Our Riders Say</h2>
-            <div className="grid md:grid-cols-3 gap-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-12">What Our Riders Say</h2>
+            <div className="grid md:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
-                <div key={index} className="bg-gray-800 rounded-lg border border-gray-700 p-6 shadow-sm">
-                  <div className="flex items-center justify-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                <div key={index} className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-8 shadow-lg hover:shadow-xl hover:bg-gray-800/70 transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
                       {testimonial.avatar}
                     </div>
                   </div>
-                  <div className="flex justify-center mb-3">
+                  <div className="flex justify-center mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                      <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-gray-300 text-sm mb-3 italic">"{testimonial.comment}"</p>
-                  <p className="font-medium text-white">{testimonial.name}</p>
+                  <p className="text-gray-300 text-base mb-4 italic leading-relaxed">"{testimonial.comment}"</p>
+                  <p className="font-semibold text-white text-lg">{testimonial.name}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* CTA Section */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 p-8 shadow-sm text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">
+          <div className="bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-700/50 p-10 shadow-2xl text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
               Ready to Go Green?
             </h2>
-            <p className="text-gray-300 mb-6">
+            <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
               Join thousands of eco-conscious riders who have made the switch to sustainable transportation.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <button
                 onClick={() => router.push(user ? '/book' : '/register')}
-                className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 text-lg"
               >
                 {user ? 'Book Now' : 'Start Riding Today'}
               </button>
               <button
                 onClick={() => router.push('/travel-log')}
-                className="border border-gray-600 text-gray-300 hover:bg-gray-700 font-semibold py-3 px-6 rounded-lg transition-colors"
+                className="border-2 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500 font-semibold py-4 px-8 rounded-xl transition-all duration-300 text-lg"
               >
                 View Travel History
               </button>

@@ -55,7 +55,7 @@ export default function BookPage() {
 
   return (
     <Layout>
-      <div className="max-w-md mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
@@ -79,13 +79,13 @@ export default function BookPage() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Start Spot
                   </label>
                   <select
                     value={startSpot}
                     onChange={(e) => setStartSpot(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
                   >
                     <option value="">Select starting location</option>
                     {mockLocations.filter(loc => !loc.name.includes('Delivery')).map(location => (
@@ -97,13 +97,13 @@ export default function BookPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Arrival Spot
                   </label>
                   <select
                     value={arrivalSpot}
                     onChange={(e) => setArrivalSpot(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
                   >
                     <option value="">Select destination</option>
                     {mockLocations.map(location => (
@@ -116,20 +116,20 @@ export default function BookPage() {
               </div>
 
               {startSpot && arrivalSpot && (
-                <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                <div className="mt-4 p-3 bg-green-900/30 border border-green-500/30 rounded-lg">
                   <div className="flex items-center justify-between text-sm">
                     <span className="flex items-center space-x-1">
                       <Clock className="w-4 h-4 text-green-600" />
                       <span>{estimatedTime}</span>
                     </span>
-                    <span className="font-medium text-green-700">{estimatedDistance}</span>
+                    <span className="font-medium text-green-400">{estimatedDistance}</span>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Riders & Items */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 shadow-sm">
               <div className="flex items-center space-x-2 mb-4">
                 <Users className="w-5 h-5 text-blue-500" />
                 <h3 className="font-semibold text-white">Ride Details</h3>
@@ -137,20 +137,20 @@ export default function BookPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Number of Riders
                   </label>
                   <div className="flex items-center space-x-3">
                     <button
                       onClick={() => setRiders(Math.max(1, riders - 1))}
-                      className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                      className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 text-white flex items-center justify-center transition-colors border border-gray-600"
                     >
                       -
                     </button>
-                    <span className="text-lg font-semibold w-8 text-center">{riders}</span>
+                    <span className="text-lg font-semibold w-8 text-center text-white">{riders}</span>
                     <button
                       onClick={() => setRiders(Math.min(4, riders + 1))}
-                      className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                      className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 text-white flex items-center justify-center transition-colors border border-gray-600"
                     >
                       +
                     </button>
@@ -159,7 +159,7 @@ export default function BookPage() {
 
                 <button
                   onClick={() => router.push('/add-items')}
-                  className="w-full flex items-center justify-center space-x-2 py-3 border border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition-colors"
+                  className="w-full flex items-center justify-center space-x-2 py-3 border border-green-500 text-green-400 rounded-lg hover:bg-green-900/30 transition-colors"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   <span>Add Items from Bodega</span>
@@ -168,7 +168,7 @@ export default function BookPage() {
             </div>
 
             {/* Payment & Notes */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 shadow-sm">
               <div className="flex items-center space-x-2 mb-4">
                 <CreditCard className="w-5 h-5 text-purple-500" />
                 <h3 className="font-semibold text-white">Payment & Notes</h3>
@@ -177,21 +177,21 @@ export default function BookPage() {
               <div className="space-y-4">
                 <button
                   onClick={() => router.push('/payments')}
-                  className="w-full flex items-center justify-center space-x-2 py-3 border border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                  className="w-full flex items-center justify-center space-x-2 py-3 border border-blue-500 text-blue-400 rounded-lg hover:bg-blue-900/30 transition-colors"
                 >
                   <CreditCard className="w-4 h-4" />
                   <span>Set Payment Method</span>
                 </button>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     <FileText className="w-4 h-4 inline mr-1" />
                     Special Notes (Optional)
                   </label>
                   <textarea
                     value={specialNotes}
                     onChange={(e) => setSpecialNotes(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all placeholder-gray-400"
                     rows={3}
                     placeholder="Any special instructions for your driver..."
                   />
@@ -211,8 +211,8 @@ export default function BookPage() {
 
           {/* Map */}
           <div className="lg:sticky lg:top-6">
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-              <div className="p-4 border-b border-gray-200">
+            <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden shadow-sm">
+              <div className="p-4 border-b border-gray-700">
                 <h3 className="font-semibold text-white">Route Preview</h3>
               </div>
               <div className="h-96">
@@ -229,33 +229,33 @@ export default function BookPage() {
         {/* Confirmation Modal */}
         {showConfirmation && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-lg shadow-md p-6 mb-6 border border-gray-700">
+            <div className="bg-gray-800 rounded-lg shadow-xl p-6 mb-6 border border-gray-700 max-w-md mx-auto">
               <div className="text-center mb-6">
                 <AirBearLogo size="lg" clickable={false} className="mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900">Confirm Your Ride</h3>
+                <h3 className="text-lg font-semibold text-white">Confirm Your Ride</h3>
               </div>
 
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">From:</span>
-                  <span className="font-medium">{startSpot}</span>
+                  <span className="text-gray-400">From:</span>
+                  <span className="font-medium text-white">{startSpot}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">To:</span>
-                  <span className="font-medium">{arrivalSpot}</span>
+                  <span className="text-gray-400">To:</span>
+                  <span className="font-medium text-white">{arrivalSpot}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Riders:</span>
-                  <span className="font-medium">{riders}</span>
+                  <span className="text-gray-400">Riders:</span>
+                  <span className="font-medium text-white">{riders}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Estimated Time:</span>
-                  <span className="font-medium">{estimatedTime}</span>
+                  <span className="text-gray-400">Estimated Time:</span>
+                  <span className="font-medium text-white">{estimatedTime}</span>
                 </div>
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-lg font-semibold">
-                    <span>Total:</span>
-                    <span>${totalCost.toFixed(2)}</span>
+                    <span className="text-white">Total:</span>
+                    <span className="text-green-400">${totalCost.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -263,13 +263,13 @@ export default function BookPage() {
               <div className="flex space-x-3">
                 <button
                   onClick={() => setShowConfirmation(false)}
-                  className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-2 px-4 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmBooking}
-                  className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-semibold"
+                  className="flex-1 py-3 px-4 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white rounded-lg transition-all font-semibold shadow-lg hover:shadow-xl"
                 >
                   Confirm Ride
                 </button>

@@ -65,8 +65,8 @@ export default function PaymentsPage() {
           <div className="text-center">
             <div className="mb-6">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Method Saved!</h2>
-              <p className="text-gray-600">Redirecting you back to booking...</p>
+              <h2 className="text-2xl font-bold text-white mb-2">Payment Method Saved!</h2>
+              <p className="text-gray-300">Redirecting you back to booking...</p>
             </div>
           </div>
         </div>
@@ -82,8 +82,8 @@ export default function PaymentsPage() {
           <div className="flex items-center justify-center space-x-3 mb-4">
             <AirBearLogo size="lg" clickable={false} />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Payment Method</h1>
-              <p className="text-gray-600">Choose how you'd like to pay</p>
+              <h1 className="text-2xl font-bold text-white">Payment Method</h1>
+              <p className="text-gray-300">Choose how you'd like to pay</p>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function PaymentsPage() {
         <form onSubmit={handleSave} className="space-y-6">
           {/* Payment Method Selection */}
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-300">
               Payment Options
             </label>
             
@@ -106,8 +106,8 @@ export default function PaymentsPage() {
                   className={`
                     border-2 rounded-lg p-4 cursor-pointer transition-all
                     ${paymentMethod === method.id 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-green-500 bg-green-900/30' 
+                      : 'border-gray-600 hover:border-gray-500 bg-gray-800'
                     }
                   `}
                   onClick={() => setPaymentMethod(method.id)}
@@ -121,10 +121,10 @@ export default function PaymentsPage() {
                       onChange={() => setPaymentMethod(method.id)}
                       className="mt-1"
                     />
-                    <method.icon className="w-5 h-5 text-gray-600 mt-0.5" />
+                    <method.icon className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
-                      <h3 className="font-medium text-gray-900">{method.label}</h3>
-                      <p className="text-sm text-gray-600">{method.desc}</p>
+                      <h3 className="font-medium text-white">{method.label}</h3>
+                      <p className="text-sm text-gray-400">{method.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -134,32 +134,32 @@ export default function PaymentsPage() {
 
           {/* Card Details */}
           {paymentMethod === 'card' && (
-            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-medium text-gray-900">Card Details</h3>
+            <div className="space-y-4 p-4 bg-gray-800 border border-gray-700 rounded-lg">
+              <h3 className="font-medium text-white">Card Details</h3>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Card Holder Name
                 </label>
                 <input
                   type="text"
                   value={cardData.name}
                   onChange={(e) => setCardData({...cardData, name: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all placeholder-gray-400"
                   placeholder="John Doe"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Card Number
                 </label>
                 <input
                   type="text"
                   value={cardData.number}
                   onChange={(e) => setCardData({...cardData, number: formatCardNumber(e.target.value)})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent font-mono"
+                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mono placeholder-gray-400"
                   placeholder="1234 5678 9012 3456"
                   maxLength={19}
                   required
@@ -168,28 +168,28 @@ export default function PaymentsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
                     Expiry Date
                   </label>
                   <input
                     type="text"
                     value={cardData.expiry}
                     onChange={(e) => setCardData({...cardData, expiry: formatExpiry(e.target.value)})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent font-mono"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mono placeholder-gray-400"
                     placeholder="MM/YY"
                     maxLength={5}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
                     CVV
                   </label>
                   <input
                     type="text"
                     value={cardData.cvv}
                     onChange={(e) => setCardData({...cardData, cvv: e.target.value.replace(/\D/g, '')})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent font-mono"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mono placeholder-gray-400"
                     placeholder="123"
                     maxLength={4}
                     required
@@ -197,8 +197,8 @@ export default function PaymentsPage() {
                 </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-xs text-blue-700">
+              <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg p-3">
+                <p className="text-xs text-blue-400">
                   🔒 Your payment information is securely encrypted and processed by Stripe.
                   Test mode is currently active.
                 </p>
@@ -211,13 +211,13 @@ export default function PaymentsPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 py-3 px-4 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
             >
               Back
             </button>
             <button
               type="submit"
-              className="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-semibold"
+              className="flex-1 py-3 px-4 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white rounded-lg transition-all font-semibold shadow-lg hover:shadow-xl"
             >
               Save Payment Method
             </button>
@@ -225,8 +225,8 @@ export default function PaymentsPage() {
         </form>
 
         {/* Test Mode Notice */}
-        <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-sm text-yellow-800">
+        <div className="mt-6 p-4 bg-yellow-900/30 border border-yellow-500/50 rounded-lg">
+          <p className="text-sm text-yellow-400">
             <strong>Test Mode:</strong> No actual charges will be made. Use test card: 4242 4242 4242 4242
           </p>
         </div>

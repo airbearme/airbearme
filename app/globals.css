@@ -51,4 +51,44 @@ html {
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Improved focus states for accessibility */
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+    @apply outline-none ring-2 ring-offset-2 ring-offset-gray-900;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Better mobile touch targets */
+  @media (max-width: 768px) {
+    button,
+    input,
+    select,
+    textarea {
+      min-height: 44px;
+    }
+  }
+  
+  /* Custom scrollbar for webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded-lg;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
 }

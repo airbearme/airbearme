@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "verify": "node scripts/health-check.js",
     "start": "next start",
     "lint": "next lint"
   },

@@ -196,7 +196,7 @@ export default function InRoutePage() {
             <div>
               <p className="text-sm font-medium text-blue-800">Live Updates</p>
               <p className="text-sm text-blue-700">
-                Driver is navigating to your pickup location. You'll receive a notification when they arrive.
+                Driver is navigating to your pickup location. You&apos;ll receive a notification when they arrive.
               </p>
             </div>
           </div>

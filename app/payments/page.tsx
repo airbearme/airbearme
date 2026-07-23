@@ -83,7 +83,7 @@ export default function PaymentsPage() {
             <AirBearLogo size="lg" clickable={false} />
             <div>
               <h1 className="text-2xl font-bold text-white">Payment Method</h1>
-              <p className="text-gray-300">Choose how you'd like to pay</p>
+              <p className="text-gray-300">Choose how you&apos;d like to pay</p>
             </div>
           </div>
         </div>

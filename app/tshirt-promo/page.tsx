@@ -70,7 +70,7 @@ export default function TShirtPromoPage() {
 
             {/* Product Features */}
             <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-4">What's Included</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">What&apos;s Included</h3>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <Gift className="w-5 h-5 text-green-500" />
@@ -175,7 +175,7 @@ export default function TShirtPromoPage() {
                 </div>
                 <div>
                   <p className="text-sm text-blue-800 italic mb-2">
-                    "Best investment ever! I've saved over $800 this year and the shirt is incredibly comfortable. Plus, knowing I'm helping the environment feels amazing!"
+                    &quot;Best investment ever! I&apos;ve saved over $800 this year and the shirt is incredibly comfortable. Plus, knowing I&apos;m helping the environment feels amazing!&quot;
                   </p>
                   <p className="text-xs text-blue-600 font-medium">- Sarah M., Early Adopter</p>
                 </div>

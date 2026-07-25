@@ -30,7 +30,7 @@ A comprehensive Progressive Web App for solar-powered rickshaw ride-sharing with
 - **Frontend**: Next.js 13+, React, TypeScript, Tailwind CSS
 - **Backend**: Supabase (PostgreSQL, Auth, Real-time)
 - **Maps**: Leaflet.js with OpenStreetMap
-- **Payments**: Stripe (test mode ready)
+- **Payments**: Stripe Checkout (cards, eligible Apple Pay/Google Pay wallets, and Cash App Pay)
 - **PWA**: Service Worker, Web App Manifest
 - **Icons**: Lucide React
 
@@ -39,8 +39,8 @@ A comprehensive Progressive Web App for solar-powered rickshaw ride-sharing with
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
-- Supabase account (optional - app works with mocks)
-- Stripe account (optional - test mode available)
+- Supabase account (required for production authentication and persistence; local location/inventory fallbacks are available)
+- Stripe account (required for production payments; use test keys during development)
 
 ### Local Development
 
@@ -133,17 +133,14 @@ The app uses the following Supabase tables:
 
 ## 🔧 Configuration
 
-### Mock Data
-If Supabase is not configured, the app automatically uses mock data for:
-- Location listings
-- Inventory items  
-- User authentication
-- Payment processing
+### Local fallback data
+If Supabase is not configured, the app keeps location and inventory browsing available locally. Production authentication, ride persistence, and payment processing require the protected Supabase and Stripe environment variables below.
 
 ### Stripe Integration
-- Test mode uses mock payments
-- Live mode requires valid Stripe keys
-- Supports multiple payment methods
+- Checkout keeps card details out of AirBear servers.
+- Apple Pay and Google Pay appear when eligible and configured in Stripe.
+- Cash App Pay is enabled through Stripe Checkout when available for the account and customer region.
+- The webhook endpoint is `https://airbear.me/api/payments/webhook` and must receive `checkout.session.completed` events.
 
 ### PWA Settings
 - Theme color: `#34D399` (green)
@@ -201,9 +198,9 @@ If Supabase is not configured, the app automatically uses mock data for:
 
 ### Mock Data Testing
 ```bash
-# Test without external services
+# Run the local UI fallback
 npm run dev
-# All features work with mock data
+# Location and inventory browsing remain available without provider credentials.
 ```
 
 ### Production Testing
@@ -215,8 +212,10 @@ npm start
 
 ## 🚀 Deployment Checklist
 
-- [ ] Environment variables configured
+- [ ] Supabase and Stripe environment variables configured in the hosting provider
+- [ ] Stripe webhook secret configured and `checkout.session.completed` enabled
 - [ ] Database schema deployed
+- [ ] Vercel project linked and production domain DNS verified
 - [ ] Static assets optimized
 - [ ] PWA manifest validated
 - [ ] Service worker registered

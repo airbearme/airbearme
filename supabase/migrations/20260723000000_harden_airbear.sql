@@ -15,6 +15,8 @@ CREATE INDEX IF NOT EXISTS rides_status_created_idx ON rides (status, created_at
 CREATE INDEX IF NOT EXISTS ride_items_ride_idx ON ride_items (ride_id);
 CREATE INDEX IF NOT EXISTS payments_user_created_idx ON payments (user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS inventory_available_category_idx ON inventory (category, name) WHERE is_available;
+CREATE UNIQUE INDEX IF NOT EXISTS payments_stripe_intent_unique_idx ON payments (stripe_payment_intent_id) WHERE stripe_payment_intent_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS tshirt_purchases_stripe_intent_unique_idx ON tshirt_purchases (stripe_payment_intent_id) WHERE stripe_payment_intent_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS chariots_available_idx ON chariots (is_available) WHERE is_available;
 
 CREATE OR REPLACE FUNCTION set_updated_at() RETURNS TRIGGER LANGUAGE plpgsql AS $$

@@ -15,7 +15,7 @@ export default function AddItemsPage() {
   const [inventory, setInventory] = useState<AirBearInventoryItem[]>([])
 
   useEffect(() => {
-    fetchInventory().then(setInventory)
+    fetchInventory().then(setInventory).catch(() => setInventory([]))
   }, [])
 
   const toggleSection = (section: string) => {

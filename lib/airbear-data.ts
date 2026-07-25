@@ -21,9 +21,22 @@ export type CartItem = {
   item: AirBearInventoryItem
   quantity: number
 }
+const fallbackLocations: AirBearLocation[] = [
+  [1, "Court Street Downtown", 42.099118, -75.917538], [2, "Riverwalk BU Center", 42.098765, -75.916543], [3, "Confluence Park", 42.090123, -75.912345],
+  [4, "Southside Walking Bridge", 42.091409, -75.914568], [5, "General Hospital", 42.086741, -75.915711], [6, "McArthur Park", 42.086165, -75.926153],
+  [7, "Greenway Path", 42.086678, -75.932483], [8, "Vestal Center", 42.091851, -75.951729], [9, "Innovation Park", 42.093877, -75.958331],
+  [10, "BU East Gym", 42.091695, -75.963590], [11, "BU Fine Arts Building", 42.089282, -75.967441], [12, "Whitney Hall", 42.088456, -75.965432],
+  [13, "Student Union", 42.086903, -75.966704], [14, "Appalachian Dining", 42.084523, -75.971264], [15, "Hinman Dining Hall", 42.086314, -75.973292],
+  [16, "BU Science Building", 42.090227, -75.972315], [17, "Just Items Delivery", null, null],
+].map(([id, name, latitude, longitude]) => ({ id: Number(id), name: String(name), latitude: latitude === null ? null : Number(latitude), longitude: longitude === null ? null : Number(longitude), is_delivery_only: id === 17 }))
 
+const fallbackInventory: AirBearInventoryItem[] = [
+  [1, "Energy Bars", "snacks", 3.5], [2, "Trail Mix", "snacks", 4], [3, "Fruit Chips", "snacks", 2.75], [4, "Granola Bites", "snacks", 3.25],
+  [5, "Solar Tea", "drinks", 2.5], [6, "Coconut Water", "drinks", 3], [7, "Green Smoothie", "drinks", 4.5], [8, "Cold Press Juice", "drinks", 5],
+  [9, "Phone Charger", "misc", 15], [10, "Eco Bags", "misc", 8], [11, "Hand Sanitizer", "misc", 4.5], [12, "Sunscreen", "misc", 12],
+].map(([id, name, category, price]) => ({ id: Number(id), name: String(name), category: String(category), price: Number(price), stock_quantity: 999, is_available: true }))
 export async function fetchLocations(): Promise<AirBearLocation[]> {
-  if (!supabase) throw new Error('Supabase is not configured.')
+  if (!supabase) return fallbackLocations
 
   const { data, error } = await supabase
     .from('locations')
@@ -35,7 +48,7 @@ export async function fetchLocations(): Promise<AirBearLocation[]> {
 }
 
 export async function fetchInventory(): Promise<AirBearInventoryItem[]> {
-  if (!supabase) throw new Error('Supabase is not configured.')
+  if (!supabase) return fallbackInventory
 
   const { data, error } = await supabase
     .from('inventory')
@@ -59,7 +72,7 @@ export async function createRide(input: {
   estimatedDistance: string
   specialNotes: string
 }): Promise<number | null> {
-  if (!supabase) throw new Error('Supabase is not configured.')
+  if (!supabase) return null
 
   const { data: authData, error: authError } = await supabase.auth.getUser()
   if (authError || !authData.user) throw new Error('Please sign in before booking a ride.')
@@ -108,7 +121,7 @@ export async function createRide(input: {
 }
 
 export async function updateRide(rideId: number, values: Record<string, unknown>) {
-  if (!supabase) throw new Error('Supabase is not configured.')
+  if (!supabase) return
   const { error } = await supabase.from('rides').update(values).eq('id', rideId)
   if (error) throw new Error(error.message)
 }

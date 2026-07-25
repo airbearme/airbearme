@@ -32,6 +32,7 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     try {
       if (supabase) {
@@ -70,6 +71,7 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     try {
       if (supabase) {
@@ -103,6 +105,7 @@ export default function LoginPage() {
   const handleAppleLogin = async () => {
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     try {
       if (supabase) {

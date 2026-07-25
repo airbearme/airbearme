@@ -25,11 +25,17 @@ export default function BookPage() {
   const [bookingError, setBookingError] = useState("")
 
   useEffect(() => {
-    // Check if user is logged in (mock check)
-    const user = localStorage.getItem('airbear_user')
-    if (!user) {
-      router.push('/login')
+    let active = true
+    const checkAuth = async () => {
+      if (supabase) {
+        const { data } = await supabase.auth.getUser()
+        if (active && !data.user) router.push("/login")
+        return
+      }
+      if (active && !localStorage.getItem("airbear_user")) router.push("/login")
     }
+    checkAuth()
+    return () => { active = false }
   }, [router])
 
   useEffect(() => {

@@ -36,6 +36,7 @@ function ResetPasswordForm() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match')

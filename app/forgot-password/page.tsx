@@ -19,6 +19,7 @@ export default function ForgotPasswordPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     try {
       if (supabase) {

@@ -39,6 +39,7 @@ export default function RegisterPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')

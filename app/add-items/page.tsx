@@ -1,17 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import AirBearLogo from '@/components/AirBearLogo'
 import { ChevronDown, ChevronRight, Plus, Minus } from 'lucide-react'
-import { mockInventoryItems } from '@/lib/supabase'
+import { fetchInventory, type AirBearInventoryItem } from '@/lib/airbear-data'
 
 export default function AddItemsPage() {
   const router = useRouter()
   const [expandedSections, setExpandedSections] = useState<string[]>(['snacks'])
   const [cart, setCart] = useState<Record<number, number>>({})
   const [riders, setRiders] = useState(1)
+  const [inventory, setInventory] = useState<AirBearInventoryItem[]>([])
+
+  useEffect(() => {
+    fetchInventory().then(setInventory)
+  }, [])
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => 
@@ -35,7 +40,7 @@ export default function AddItemsPage() {
 
   const getCartTotal = () => {
     return Object.entries(cart).reduce((total, [itemId, quantity]) => {
-      const item = [...mockInventoryItems.snacks, ...mockInventoryItems.drinks, ...mockInventoryItems.misc]
+      const item = inventory
         .find(item => item.id === parseInt(itemId))
       return total + (item ? item.price * quantity : 0)
     }, 0)
@@ -43,7 +48,7 @@ export default function AddItemsPage() {
 
   const getCartItems = () => {
     return Object.entries(cart).map(([itemId, quantity]) => {
-      const item = [...mockInventoryItems.snacks, ...mockInventoryItems.drinks, ...mockInventoryItems.misc]
+      const item = inventory
         .find(item => item.id === parseInt(itemId))
       return { item, quantity }
     }).filter(({ item }) => item)
@@ -159,9 +164,9 @@ export default function AddItemsPage() {
 
         {/* Items Sections */}
         <div className="space-y-4 mb-6">
-          {renderSection('Snacks', 'snacks', mockInventoryItems.snacks)}
-          {renderSection('Drinks', 'drinks', mockInventoryItems.drinks)}
-          {renderSection('Misc Items', 'misc', mockInventoryItems.misc)}
+          {renderSection('Snacks', 'snacks', inventory.filter(item => item.category === 'snacks'))}
+          {renderSection('Drinks', 'drinks', inventory.filter(item => item.category === 'drinks'))}
+          {renderSection('Misc Items', 'misc', inventory.filter(item => item.category === 'misc'))}
         </div>
 
         {/* Cart Summary */}

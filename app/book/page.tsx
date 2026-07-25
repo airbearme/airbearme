@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import AirBearLogo from '@/components/AirBearLogo'
 import MapComponent from '@/components/MapComponent'
-import { mockLocations } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
+import { createRide, fetchLocations, type AirBearLocation, type CartItem } from '@/lib/airbear-data'
 import { MapPin, Clock, Users, ShoppingBag, CreditCard, FileText } from 'lucide-react'
 
 export default function BookPage() {
@@ -19,6 +20,9 @@ export default function BookPage() {
   const [estimatedDistance, setEstimatedDistance] = useState('5.2 miles')
   const [estimatedTime, setEstimatedTime] = useState('15 minutes')
   const [totalCost, setTotalCost] = useState(12.50)
+  const [locations, setLocations] = useState<AirBearLocation[]>([])
+  const [isSaving, setIsSaving] = useState(false)
+  const [bookingError, setBookingError] = useState("")
 
   useEffect(() => {
     // Check if user is logged in (mock check)
@@ -28,6 +32,15 @@ export default function BookPage() {
     }
   }, [router])
 
+  useEffect(() => {
+    fetchLocations().then(setLocations).catch(() => setBookingError("Unable to load ride locations."))
+    const savedCart = localStorage.getItem("cart_items")
+    if (savedCart) {
+      try { const parsed = JSON.parse(savedCart); setItems(parsed.items || []); setTotalCost(12.50 + Number(parsed.total || 0)) }
+      catch { localStorage.removeItem("cart_items") }
+    }
+  }, [])
+
   const handleCheckOut = () => {
     if (!startSpot || !arrivalSpot) {
       alert('Please select both start and arrival locations')
@@ -36,9 +49,18 @@ export default function BookPage() {
     setShowConfirmation(true)
   }
 
-  const confirmBooking = () => {
+  const confirmBooking = async () => {
+    setIsSaving(true)
+    setBookingError("")
+    const rideId = await createRide({ startSpot, arrivalSpot, riders, items: items as CartItem[], totalCost, estimatedTime, estimatedDistance, specialNotes })
+      .catch(error => {
+        if (supabase) setBookingError(error instanceof Error ? error.message : "Unable to save your ride.")
+        return null
+      })
+    if (supabase && !rideId) { setIsSaving(false); return }
     // Store booking data
     const booking = {
+      rideId,
       startSpot,
       arrivalSpot,
       riders,
@@ -50,6 +72,7 @@ export default function BookPage() {
       timestamp: new Date().toISOString()
     }
     localStorage.setItem('current_booking', JSON.stringify(booking))
+    setIsSaving(false)
     router.push('/in-route')
   }
 
@@ -88,7 +111,7 @@ export default function BookPage() {
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
                   >
                     <option value="">Select starting location</option>
-                    {mockLocations.filter(loc => !loc.name.includes('Delivery')).map(location => (
+                    {locations.filter(loc => !loc.name.includes('Delivery')).map(location => (
                       <option key={location.id} value={location.name}>
                         {location.name}
                       </option>
@@ -106,7 +129,7 @@ export default function BookPage() {
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
                   >
                     <option value="">Select destination</option>
-                    {mockLocations.map(location => (
+                    {locations.map(location => (
                       <option key={location.id} value={location.name}>
                         {location.name}
                       </option>
@@ -268,12 +291,13 @@ export default function BookPage() {
                   Cancel
                 </button>
                 <button
-                  onClick={confirmBooking}
+                  onClick={confirmBooking} disabled={isSaving}
                   className="flex-1 py-3 px-4 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white rounded-lg transition-all font-semibold shadow-lg hover:shadow-xl"
                 >
-                  Confirm Ride
+                  {isSaving ? "Saving..." : "Confirm Ride"}
                 </button>
               </div>
+              {bookingError && <p className="mt-3 text-sm text-red-400" role="alert">{bookingError}</p>}
             </div>
           </div>
         )}

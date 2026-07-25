@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import AirBearLogo from '@/components/AirBearLogo'
@@ -9,53 +10,29 @@ import { CreditCard, Smartphone, DollarSign, CheckCircle } from 'lucide-react'
 export default function PaymentsPage() {
   const router = useRouter()
   const [paymentMethod, setPaymentMethod] = useState('card')
-  const [cardData, setCardData] = useState({
-    number: '',
-    expiry: '',
-    cvv: '',
-    name: ''
-  })
+  const [paymentError, setPaymentError] = useState("")
   const [saved, setSaved] = useState(false)
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // Mock payment method save
-    const paymentData = {
-      method: paymentMethod,
-      cardData: paymentMethod === 'card' ? cardData : null,
-      timestamp: new Date().toISOString()
+    setPaymentError("")
+    if (paymentMethod === "cash" || paymentMethod === "card_on_cart") {
+      localStorage.setItem("payment_method", JSON.stringify({ method: paymentMethod, timestamp: new Date().toISOString() }))
+      setSaved(true)
+      setTimeout(() => router.back(), 1500)
+      return
     }
-    
-    localStorage.setItem('payment_method', JSON.stringify(paymentData))
-    setSaved(true)
-    
-    setTimeout(() => {
-      router.back()
-    }, 1500)
-  }
-
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
-    const matches = v.match(/\d{4,16}/g)
-    const match = matches && matches[0] || ''
-    const parts = []
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4))
+    const amount = Number(new URLSearchParams(window.location.search).get("amount"))
+    if (!Number.isInteger(amount) || amount < 50) {
+      setPaymentError("Return to booking and choose a ride amount before opening secure checkout.")
+      return
     }
-    if (parts.length) {
-      return parts.join(' ')
-    } else {
-      return v
-    }
-  }
-
-  const formatExpiry = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
-    if (v.length >= 2) {
-      return v.substring(0, 2) + '/' + v.substring(2, 4)
-    }
-    return v
+    const { data: sessionData } = supabase ? await supabase.auth.getSession() : { data: { session: null } }
+    if (!sessionData.session) { setPaymentError("Sign in before starting card checkout."); return }
+    const response = await fetch("/api/payments/checkout", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionData.session.access_token}` }, body: JSON.stringify({ amount, description: "AirBear ride" }) })
+    const result = await response.json()
+    if (!response.ok || !result.url) { setPaymentError(result.error || "Unable to start secure checkout."); return }
+    window.location.assign(result.url)
   }
 
   if (saved) {
@@ -132,79 +109,7 @@ export default function PaymentsPage() {
             </div>
           </div>
 
-          {/* Card Details */}
-          {paymentMethod === 'card' && (
-            <div className="space-y-4 p-4 bg-gray-800 border border-gray-700 rounded-lg">
-              <h3 className="font-medium text-white">Card Details</h3>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Card Holder Name
-                </label>
-                <input
-                  type="text"
-                  value={cardData.name}
-                  onChange={(e) => setCardData({...cardData, name: e.target.value})}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all placeholder-gray-400"
-                  placeholder="John Doe"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Card Number
-                </label>
-                <input
-                  type="text"
-                  value={cardData.number}
-                  onChange={(e) => setCardData({...cardData, number: formatCardNumber(e.target.value)})}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mono placeholder-gray-400"
-                  placeholder="1234 5678 9012 3456"
-                  maxLength={19}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    Expiry Date
-                  </label>
-                  <input
-                    type="text"
-                    value={cardData.expiry}
-                    onChange={(e) => setCardData({...cardData, expiry: formatExpiry(e.target.value)})}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mono placeholder-gray-400"
-                    placeholder="MM/YY"
-                    maxLength={5}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    CVV
-                  </label>
-                  <input
-                    type="text"
-                    value={cardData.cvv}
-                    onChange={(e) => setCardData({...cardData, cvv: e.target.value.replace(/\D/g, '')})}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mono placeholder-gray-400"
-                    placeholder="123"
-                    maxLength={4}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg p-3">
-                <p className="text-xs text-blue-400">
-                  🔒 Your payment information is securely encrypted and processed by Stripe.
-                  Test mode is currently active.
-                </p>
-              </div>
-            </div>
-          )}
+          {paymentError && <p className="text-sm text-red-400" role="alert">{paymentError}</p>}
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-4">
@@ -223,12 +128,8 @@ export default function PaymentsPage() {
             </button>
           </div>
         </form>
-
-        {/* Test Mode Notice */}
-        <div className="mt-6 p-4 bg-yellow-900/30 border border-yellow-500/50 rounded-lg">
-          <p className="text-sm text-yellow-400">
-            <strong>Test Mode:</strong> No actual charges will be made. Use test card: 4242 4242 4242 4242
-          </p>
+        <div className="mt-6 p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
+          <p className="text-sm text-blue-300">Card payments open Stripe Checkout, which securely supports cards and eligible Apple Pay, Google Pay, and Cash App Pay wallets. AirBear never receives or stores card numbers.</p>
         </div>
       </div>
     </Layout>

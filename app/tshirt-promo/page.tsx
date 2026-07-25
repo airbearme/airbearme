@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { supabase } from "@/lib/supabase"
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import AirBearLogo from '@/components/AirBearLogo'
@@ -10,28 +11,14 @@ export default function TShirtPromoPage() {
   const router = useRouter()
   const [showModal, setShowModal] = useState(false)
   const [loading, setLoading] = useState(false)
-
   const handlePurchase = async () => {
     setLoading(true)
-    
-    // Mock Stripe payment process
-    setTimeout(() => {
-      const purchase = {
-        id: Date.now(),
-        userId: 'mock-user',
-        purchaseDate: new Date().toISOString(),
-        amount: 100.00,
-        status: 'completed'
-      }
-      
-      // Save purchase
-      const purchases = JSON.parse(localStorage.getItem('tshirt_purchases') || '[]')
-      localStorage.setItem('tshirt_purchases', JSON.stringify([purchase, ...purchases]))
-      
-      setLoading(false)
-      alert('🎉 Congratulations! Your AirBear CEO T-shirt has been purchased successfully!')
-      router.push('/')
-    }, 2000)
+    const { data: sessionData } = supabase ? await supabase.auth.getSession() : { data: { session: null } }
+    if (!sessionData.session) { setLoading(false); setShowModal(false); router.push("/login"); return }
+    const response = await fetch("/api/payments/checkout", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionData.session.access_token}` }, body: JSON.stringify({ amount: 10000, description: "AirBear CEO T-Shirt and unlimited rides", purchaseType: "tshirt" }) })
+    const result = await response.json()
+    if (!response.ok || !result.url) { setLoading(false); return }
+    window.location.assign(result.url)
   }
 
   return (
@@ -209,7 +196,7 @@ export default function TShirtPromoPage() {
 
                 <div className="flex items-center space-x-2 p-3 bg-green-50 rounded-lg">
                   <CreditCard className="w-5 h-5 text-green-600" />
-                  <span className="text-sm text-green-700">Secure payment via Stripe (Test Mode)</span>
+                  <span className="text-sm text-green-700">Secure payment via Stripe Checkout</span>
                 </div>
               </div>
 

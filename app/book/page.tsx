@@ -199,7 +199,7 @@ export default function BookPage() {
 
               <div className="space-y-4">
                 <button
-                  onClick={() => router.push('/payments')}
+                  onClick={() => router.push(`/payments?amount=${Math.round(totalCost * 100)}`)}
                   className="w-full flex items-center justify-center space-x-2 py-3 border border-blue-500 text-blue-400 rounded-lg hover:bg-blue-900/30 transition-colors"
                 >
                   <CreditCard className="w-4 h-4" />

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Layout from '@/components/Layout'
 import AirBearLogo from '@/components/AirBearLogo'
 import { Calendar, MapPin, Clock, Star, Receipt, ChevronRight } from 'lucide-react'
+import { fetchUserRides } from '@/lib/airbear-data'
 
 export default function TravelLogPage() {
   const [trips, setTrips] = useState<any[]>([])
@@ -15,16 +16,22 @@ export default function TravelLogPage() {
   })
 
   useEffect(() => {
-    const tripHistory = JSON.parse(localStorage.getItem('trip_history') || '[]')
-    setTrips(tripHistory)
-
-    // Calculate stats
-    const totalTrips = tripHistory.length
-    const totalMiles = tripHistory.reduce((sum: number, trip: any) => sum + parseFloat(trip.estimatedDistance.replace(' mi', '')), 0)
-    const totalSaved = tripHistory.reduce((sum: number, trip: any) => sum + trip.totalCost, 0)
-    const co2Saved = totalMiles * 0.89 // Approximate CO2 savings per mile
-
-    setStats({ totalTrips, totalMiles, totalSaved, co2Saved })
+    const loadTrips = async () => {
+      const remoteTrips = await fetchUserRides().catch(() => null)
+      const tripHistory = remoteTrips !== null
+        ? remoteTrips.map((trip: any) => {
+            const start = Array.isArray(trip.start_location) ? trip.start_location[0] : trip.start_location
+            const end = Array.isArray(trip.end_location) ? trip.end_location[0] : trip.end_location
+            return { ...trip, startSpot: start?.name || "Unknown", arrivalSpot: end?.name || "Unknown", totalCost: Number(trip.total_amount || 0), estimatedDistance: String(Number(trip.distance_miles || 0)) + " miles", estimatedTime: String(trip.estimated_time_minutes || 0) + " minutes", completedAt: trip.created_at }
+          })
+        : JSON.parse(localStorage.getItem("trip_history") || "[]")
+      setTrips(tripHistory)
+      const totalTrips = tripHistory.length
+      const totalMiles = tripHistory.reduce((sum: number, trip: any) => sum + Number.parseFloat(String(trip.estimatedDistance || "0")), 0)
+      const totalSaved = tripHistory.reduce((sum: number, trip: any) => sum + Number(trip.totalCost || 0), 0)
+      setStats({ totalTrips, totalMiles, totalSaved, co2Saved: totalMiles * 0.89 })
+    }
+    loadTrips()
   }, [])
 
   const formatDate = (dateString: string) => {

@@ -40,6 +40,10 @@ BEGIN
     CREATE POLICY "Users can add own ride items" ON ride_items FOR INSERT TO authenticated
       WITH CHECK (EXISTS (SELECT 1 FROM rides WHERE rides.id = ride_items.ride_id AND rides.user_id = auth.uid()));
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Users can update own rides' AND tablename = 'rides') THEN
+    CREATE POLICY "Users can update own rides" ON rides FOR UPDATE TO authenticated
+      USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+  END IF;
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Users can read own payments' AND tablename = 'payments') THEN
     CREATE POLICY "Users can read own payments" ON payments FOR SELECT TO authenticated USING (user_id = auth.uid());
   END IF;

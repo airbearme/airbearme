@@ -5,12 +5,15 @@ import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import AirBearLogo from '@/components/AirBearLogo'
 import { Star, Phone, Receipt, User, CheckCircle } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+import { updateRide } from '@/lib/airbear-data'
 
 export default function ArrivalPage() {
   const router = useRouter()
   const [booking, setBooking] = useState<any>(null)
   const [rating, setRating] = useState(0)
   const [showThankYou, setShowThankYou] = useState(false)
+  const [completionError, setCompletionError] = useState("")
 
   const driverInfo = {
     name: 'Alex Rodriguez',
@@ -40,20 +43,20 @@ export default function ArrivalPage() {
     setRating(stars)
   }
 
-  const handleComplete = () => {
-    // Save trip to history
-    const trip = {
-      ...booking,
-      driverInfo,
-      rating,
-      completedAt: new Date().toISOString(),
-      status: 'completed'
+  const handleComplete = async () => {
+    setCompletionError("")
+    if (supabase && booking?.rideId) {
+      try {
+        await updateRide(Number(booking.rideId), { status: 'completed', rating: rating || null })
+      } catch (error) {
+        setCompletionError(error instanceof Error ? error.message : 'Unable to complete the ride.')
+        return
+      }
     }
-    
+    const trip = { ...booking, driverInfo, rating, completedAt: new Date().toISOString(), status: 'completed' }
     const existingTrips = JSON.parse(localStorage.getItem('trip_history') || '[]')
     localStorage.setItem('trip_history', JSON.stringify([trip, ...existingTrips]))
     localStorage.removeItem('current_booking')
-    
     router.push('/travel-log')
   }
 

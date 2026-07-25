@@ -1,4 +1,4 @@
-import { mockInventoryItems, mockLocations, supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export type AirBearLocation = {
   id: number
@@ -22,24 +22,20 @@ export type CartItem = {
   quantity: number
 }
 
-const fallbackInventory = Object.entries(mockInventoryItems).flatMap(([category, items]) =>
-  items.map(item => ({ ...item, category, stock_quantity: 999, is_available: true }))
-)
-
 export async function fetchLocations(): Promise<AirBearLocation[]> {
-  if (!supabase) return mockLocations
+  if (!supabase) throw new Error('Supabase is not configured.')
 
   const { data, error } = await supabase
     .from('locations')
     .select('id, name, latitude, longitude, is_delivery_only')
     .order('name')
 
-  if (error || !data?.length) return mockLocations
+  if (error) throw new Error(error.message)
   return data as AirBearLocation[]
 }
 
 export async function fetchInventory(): Promise<AirBearInventoryItem[]> {
-  if (!supabase) return fallbackInventory
+  if (!supabase) throw new Error('Supabase is not configured.')
 
   const { data, error } = await supabase
     .from('inventory')
@@ -49,7 +45,7 @@ export async function fetchInventory(): Promise<AirBearInventoryItem[]> {
     .order('category')
     .order('name')
 
-  if (error || !data?.length) return fallbackInventory
+  if (error) throw new Error(error.message)
   return data.map(item => ({ ...item, price: Number(item.price) })) as AirBearInventoryItem[]
 }
 
@@ -63,7 +59,7 @@ export async function createRide(input: {
   estimatedDistance: string
   specialNotes: string
 }): Promise<number | null> {
-  if (!supabase) return null
+  if (!supabase) throw new Error('Supabase is not configured.')
 
   const { data: authData, error: authError } = await supabase.auth.getUser()
   if (authError || !authData.user) throw new Error('Please sign in before booking a ride.')
@@ -112,7 +108,7 @@ export async function createRide(input: {
 }
 
 export async function updateRide(rideId: number, values: Record<string, unknown>) {
-  if (!supabase) return
+  if (!supabase) throw new Error('Supabase is not configured.')
   const { error } = await supabase.from('rides').update(values).eq('id', rideId)
   if (error) throw new Error(error.message)
 }

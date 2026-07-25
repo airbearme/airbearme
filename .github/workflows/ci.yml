@@ -32,6 +32,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+          NEXT_PUBLIC_APP_URL: https://airbear.me
 
   vercel_config:
     name: Check Vercel deploy configuration

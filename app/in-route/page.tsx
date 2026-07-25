@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import AirBearLogo from '@/components/AirBearLogo'
+import { supabase } from "@/lib/supabase"
+import { updateRide } from "@/lib/airbear-data"
 import MapComponent from '@/components/MapComponent'
 import { Phone, Receipt, X, User, Star, Clock, MapPin } from 'lucide-react'
 
@@ -29,10 +31,14 @@ export default function InRoutePage() {
     }
   }, [router])
 
-  const handleCancel = () => {
-    if (confirm('Are you sure you want to cancel this ride?')) {
-      localStorage.removeItem('current_booking')
-      router.push('/book')
+  const handleCancel = async () => {
+    if (confirm("Are you sure you want to cancel this ride?")) {
+      if (supabase && booking?.rideId) {
+        try { await updateRide(Number(booking.rideId), { status: "cancelled" }) }
+        catch { return }
+      }
+      localStorage.removeItem("current_booking")
+      router.push("/book")
     }
   }
 

@@ -99,6 +99,7 @@ export default function RegisterPage() {
   const handleGoogleSignup = async () => {
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     try {
       if (supabase) {
@@ -132,6 +133,7 @@ export default function RegisterPage() {
   const handleAppleSignup = async () => {
     setLoading(true)
     setError('')
+    if (!supabase) { setError('Authentication is not configured.'); setLoading(false); return }
 
     try {
       if (supabase) {
